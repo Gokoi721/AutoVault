@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+jinja2
+python-multipart
+itsdangerous
+
+
+#py -m uvicorn main:app --reload#

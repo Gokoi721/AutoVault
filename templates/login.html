@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Вхід адміністратора — AutoVault{% endblock %}
+{% block content %}
+<div class="login-page"><div class="login-card"><div class="logo-mark big">A</div><div class="eyebrow">PRIVATE ACCESS</div><h1>Вхід <em>адміністратора</em></h1><p>Увійди, щоб додавати, редагувати та видаляти автомобілі.</p>
+{% if error %}<div class="error-msg">{{ error }}</div>{% endif %}
+<form action="/login" method="post" class="form-stack"><input type="hidden" name="next" value="{{ next }}"><label>Логін<input name="username" required autocomplete="username" placeholder="admin"></label><label>Пароль<input name="password" type="password" required autocomplete="current-password" placeholder="Введи пароль"></label><button class="btn btn-primary full" type="submit">Увійти в панель →</button></form>
+<div class="demo-hint"><b>Демо-доступ для локального запуску</b><br>Логін: <code>admin</code><br>Пароль: <code>AutoVault2026!</code><br><small>Зміни ці дані перед публічним розгортанням.</small></div>
+</div></div>
+{% endblock %}

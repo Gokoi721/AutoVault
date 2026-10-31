@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}AutoVault — автомобільний каталог{% endblock %}
+{% block content %}
+<section class="hero{% if hero_cars %} has-photo{% endif %}">
+ <div class="hero-bg">
+  {% for c in hero_cars %}
+  <div class="hero-slide{% if loop.first %} active{% endif %}" data-href="/cars/{{ c.id }}" data-name="{{ c.brand }} {{ c.model }}" data-meta="{{ c.year }} · {{ c.body_type }}" data-price="{{ '{:,.0f}'.format(c.price).replace(',', ' ') }} USD">
+   <img src="{{ img_src(c.image) }}" alt="" {% if not loop.first %}loading="lazy"{% endif %} onerror="this.parentElement.remove()">
+  </div>
+  {% endfor %}
+  <div class="hero-shade"></div>
+ </div>
+ <div class="hero-copy">
+  <div class="eyebrow"><span></span> YOUR NEXT CHAPTER STARTS HERE</div>
+  <h1>Знайди авто,<br><em>що говорить за тебе.</em></h1>
+  <p>Добірка автомобілів для тих, хто цінує характер, комфорт і свободу руху.</p>
+  <a href="#catalog" class="btn btn-primary">Переглянути каталог <svg class="ic"><use href="#i-arrow"/></svg></a>
+ </div>
+ <div class="hero-foot">
+  <div class="hero-stats"><div><b data-count="{{ total }}">{{ total }}</b><span>АВТОМОБІЛІВ</span></div><div><b>01</b><span>ТВІЙ НАСТУПНИЙ КРОК</span></div></div>
+  {% if hero_cars %}
+  <a class="hero-caption" href="{{ '/cars/' ~ hero_cars[0].id }}">
+   <small>У ФОКУСІ</small>
+   <strong class="hc-name">{{ hero_cars[0].brand }} {{ hero_cars[0].model }}</strong>
+   <span class="hc-meta">{{ hero_cars[0].year }} · {{ hero_cars[0].body_type }}</span>
+   <span class="hc-price">{{ '{:,.0f}'.format(hero_cars[0].price).replace(',', ' ') }} USD</span>
+   {% if hero_cars|length > 1 %}<span class="hero-dots">{% for c in hero_cars %}<i class="{% if loop.first %}on{% endif %}" data-i="{{ loop.index0 }}"></i>{% endfor %}</span>{% endif %}
+  </a>
+  {% endif %}
+ </div>
+</section>
+<section class="catalog-section" id="catalog">
+ <div class="section-top"><div><div class="eyebrow">CURATED COLLECTION</div><h2>Каталог <em>автомобілів</em></h2><p class="muted">Знайди свій стиль серед доступних пропозицій.</p></div>
+ {% if user %}<a class="btn btn-primary" href="/cars/new">＋ Додати авто</a>{% endif %}</div>
+ <form class="filter-panel" action="/" method="get">
+  <label class="search-field"><span>⌕</span><input name="q" value="{{ q }}" placeholder="Марка, модель або ключове слово"></label>
+  <select name="brand"><option value="">Усі марки</option>{% for b in brands %}<option value="{{ b }}" {% if brand == b %}selected{% endif %}>{{ b }}</option>{% endfor %}</select>
+  <select name="fuel"><option value="">Будь-яке пальне</option>{% for x in ["Бензин","Дизель","Гібрид","Електро","Газ"] %}<option {% if fuel == x %}selected{% endif %}>{{ x }}</option>{% endfor %}</select>
+  <select name="transmission"><option value="">Будь-яка КПП</option>{% for x in ["Автомат","Механіка","Варіатор","Робот"] %}<option {% if transmission == x %}selected{% endif %}>{{ x }}</option>{% endfor %}</select>
+  <div class="price-range"><input name="min_price" value="{{ min_price }}" type="number" min="0" placeholder="Ціна від"><input name="max_price" value="{{ max_price }}" type="number" min="0" placeholder="Ціна до"></div>
+  <select name="sort"><option value="newest" {% if sort == "newest" %}selected{% endif %}>Нові спочатку</option><option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Ціна: зростання</option><option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Ціна: спадання</option><option value="year_desc" {% if sort == "year_desc" %}selected{% endif %}>Найновіші авто</option></select>
+  <button class="btn btn-primary filter-submit" type="submit">Застосувати</button><a class="reset-link" href="/">Скинути</a>
+ </form>
+ <div class="results-line"><span>РЕЗУЛЬТАТИ ПОШУКУ</span><b>{{ cars|length }} авто</b></div>
+ {% if cars %}
+ <div class="car-grid">
+ {% for car in cars %}
+  <article class="car-card reveal" style="--i:{{ loop.index0 }}">
+   <a class="car-image" href="/cars/{{ car.id }}">
+    {% if car.image %}<img src="{{ img_src(car.image) }}" alt="{{ car.brand }} {{ car.model }}" loading="lazy" onerror="this.remove()">{% else %}<div class="car-placeholder"><span>A</span><small>PHOTO COMING SOON</small></div>{% endif %}
+    <span class="image-tag">{{ car.year }}</span>
+    <span class="badges">{% for kind, label, icon in badges(car) %}<span class="badge badge-{{ kind }}"><svg class="ic"><use href="#i-{{ icon }}"/></svg>{{ label }}</span>{% endfor %}</span>
+    <span class="image-arrow"><svg class="ic"><use href="#i-arrow"/></svg></span>
+   </a>
+   <button class="fav" type="button" data-id="{{ car.id }}" aria-label="Додати в обране"><svg class="ic"><use href="#i-heart"/></svg></button>
+   <div class="car-info"><div class="car-meta"><span>{{ car.body_type }}</span><span>{{ "{:,}".format(car.mileage).replace(",", " ") }} км</span></div>
+    <h3><a href="/cars/{{ car.id }}">{{ car.brand }} {{ car.model }}</a></h3>
+    <div class="spec-row">
+     <span><svg class="ic"><use href="#i-engine"/></svg>{% if car.engine_volume %}{{ car.engine_volume }} л{% else %}EV{% endif %}</span>
+     <span><svg class="ic"><use href="#i-fuel"/></svg>{{ car.fuel }}</span>
+     <span><svg class="ic"><use href="#i-gear"/></svg>{{ car.transmission }}</span>
+    </div>
+    <div class="card-bottom"><div class="price">{{ "{:,.0f}".format(car.price).replace(",", " ") }} <small>USD</small></div><a class="details-link" href="/cars/{{ car.id }}">Деталі <svg class="ic"><use href="#i-chev-r"/></svg></a></div>
+   </div>
+  </article>
+ {% endfor %}
+ </div>
+ {% else %}<div class="empty-state"><div class="empty-icon">⌕</div><h3>Автомобілів не знайдено</h3><p>Спробуй змінити фільтри або додай перше авто після входу адміністратора.</p><a href="/" class="btn btn-ghost">Очистити фільтри</a></div>{% endif %}
+</section>
+<section class="about-band" id="about"><div><div class="eyebrow">MORE THAN A CATALOG</div><h2>Авто — це не просто<br><em>точка А і точка Б.</em></h2></div><p>AutoVault допомагає зручно переглядати пропозиції, порівнювати характеристики та знаходити автомобіль під власні потреби.</p></section>
+{% endblock %}

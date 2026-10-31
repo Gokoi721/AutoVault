@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == "new" %}Додати авто{% else %}Редагувати авто{% endif %} — AutoVault{% endblock %}
+{% block content %}
+<div class="form-page"><a class="back-link" href="/">← До каталогу</a><div class="form-heading"><div class="eyebrow">MANAGE YOUR INVENTORY</div><h1>{% if mode == "new" %}Додати <em>автомобіль</em>{% else %}Редагувати <em>автомобіль</em>{% endif %}</h1><p>Заповни основні характеристики та збережи зміни.</p></div>
+<form class="car-form" action="{% if mode == 'new' %}/cars/new{% else %}/cars/{{ car.id }}/edit{% endif %}" method="post" enctype="multipart/form-data">
+ <div class="form-section"><h2>Основна інформація</h2><div class="form-grid">
+  <label>Марка *<input name="brand" required maxlength="80" value="{{ car.brand if car else '' }}" placeholder="BMW"></label>
+  <label>Модель *<input name="model" required maxlength="100" value="{{ car.model if car else '' }}" placeholder="M3 Competition"></label>
+  <label>Рік випуску *<input name="year" type="number" required min="1886" max="2100" value="{{ car.year if car else 2022 }}"></label>
+  <label>Ціна (USD) *<input name="price" type="number" required min="0" step="0.01" value="{{ car.price if car else '' }}" placeholder="35000"></label>
+  <label>Пробіг (км)<input name="mileage" type="number" min="0" value="{{ car.mileage if car else 0 }}"></label>
+  <label>Об'єм двигуна (л)<input name="engine_volume" type="number" min="0" step="0.1" value="{{ car.engine_volume if car else 2.0 }}"></label>
+  <label>Пальне<select name="fuel">{% for x in ["Бензин","Дизель","Гібрид","Електро","Газ"] %}<option {% if car and car.fuel == x %}selected{% endif %}>{{ x }}</option>{% endfor %}</select></label>
+  <label>Коробка передач<select name="transmission">{% for x in ["Автомат","Механіка","Варіатор","Робот"] %}<option {% if car and car.transmission == x %}selected{% endif %}>{{ x }}</option>{% endfor %}</select></label>
+  <label>Тип кузова<select name="body_type">{% for x in ["Седан","Позашляховик","Купе","Хетчбек","Універсал","Кабріолет","Пікап","Мінівен","Ліфтбек"] %}<option {% if car and car.body_type == x %}selected{% endif %}>{{ x }}</option>{% endfor %}</select></label>
+  <label>Колір<input name="color" maxlength="50" value="{{ car.color if car else 'Чорний' }}"></label>
+ </div></div>
+ <div class="form-section"><h2>Фото та опис</h2><label>Фото автомобіля (JPG, PNG, WEBP)<input name="image" type="file" accept=".jpg,.jpeg,.png,.webp"></label>{% if car and car.image %}<p class="current-image">Поточне фото: {{ car.image }}. Якщо не вибрати нове, воно залишиться.</p>{% endif %}
+ <label>Додаткові фото для галереї (можна вибрати кілька)<input name="gallery" type="file" accept=".jpg,.jpeg,.png,.webp" multiple></label>
+ {% if extra %}<div class="extra-block"><p class="current-image">Поточні додаткові фото. Познач ті, які треба видалити:</p><div class="extra-grid">{% for im in extra %}<label class="extra-thumb"><img src="/static/uploads/{{ im.filename }}" alt=""><span><input type="checkbox" name="remove_images" value="{{ im.id }}"> Видалити</span></label>{% endfor %}</div></div>{% endif %}<label>Опис<textarea name="description" rows="5" placeholder="Комплектація, стан, додаткові опції...">{{ car.description if car else '' }}</textarea></label></div>
+ <div class="form-footer"><a class="btn btn-ghost" href="/">Скасувати</a><button class="btn btn-primary" type="submit">{% if mode == "new" %}＋ Створити оголошення{% else %}Зберегти зміни{% endif %}</button></div>
+</form></div>
+{% endblock %}

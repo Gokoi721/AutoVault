@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ car.brand }} {{ car.model }} — AutoVault{% endblock %}
+{% block content %}
+<div class="detail-wrap"><a class="back-link" href="/">← Назад до каталогу</a>
+ <div class="detail-layout">
+  <div class="gallery">
+   <div class="gallery-main">
+    {% if gallery %}
+     <button type="button" class="gallery-open" aria-label="Відкрити на весь екран"><img src="{{ gallery[0] }}" alt="{{ car.brand }} {{ car.model }}"></button>
+     <span class="gallery-expand"><svg class="ic"><use href="#i-expand"/></svg></span>
+     {% if gallery|length > 1 %}
+      <button type="button" class="gnav prev" aria-label="Попереднє фото"><svg class="ic"><use href="#i-chev-l"/></svg></button>
+      <button type="button" class="gnav next" aria-label="Наступне фото"><svg class="ic"><use href="#i-chev-r"/></svg></button>
+      <span class="gallery-count">1 / {{ gallery|length }}</span>
+     {% endif %}
+    {% else %}<div class="car-placeholder large"><span>A</span><small>PHOTO COMING SOON</small></div>{% endif %}
+   </div>
+   {% if gallery|length > 1 %}
+   <div class="thumbs">{% for src in gallery %}<button type="button" class="thumb{% if loop.first %} active{% endif %}" data-i="{{ loop.index0 }}" aria-label="Фото {{ loop.index }}"><img src="{{ src }}" alt="" loading="lazy"></button>{% endfor %}</div>
+   {% endif %}
+  </div>
+  <div class="detail-info"><div class="eyebrow">AUTOVAULT SELECT</div>
+   <div class="detail-year">{{ car.year }} · {{ car.body_type }}</div>
+   <h1>{{ car.brand }} <em>{{ car.model }}</em></h1>
+   <div class="badges inline">{% for kind, label, icon in badges(car) %}<span class="badge badge-{{ kind }}"><svg class="ic"><use href="#i-{{ icon }}"/></svg>{{ label }}</span>{% endfor %}</div>
+   <div class="detail-price">{{ "{:,.0f}".format(car.price).replace(",", " ") }} <small>USD</small></div>
+   <div class="spec-grid">
+    <div><span><svg class="ic"><use href="#i-road"/></svg>Пробіг</span><b>{{ "{:,}".format(car.mileage).replace(",", " ") }} км</b></div>
+    <div><span><svg class="ic"><use href="#i-fuel"/></svg>Пальне</span><b>{{ car.fuel }}</b></div>
+    <div><span><svg class="ic"><use href="#i-gear"/></svg>Коробка передач</span><b>{{ car.transmission }}</b></div>
+    <div><span><svg class="ic"><use href="#i-engine"/></svg>Об'єм двигуна</span><b>{% if car.engine_volume %}{{ car.engine_volume }} л{% else %}Електродвигун{% endif %}</b></div>
+    <div><span><svg class="ic"><use href="#i-drop"/></svg>Колір</span><b>{{ car.color }}</b></div>
+    <div><span><svg class="ic"><use href="#i-body"/></svg>Тип кузова</span><b>{{ car.body_type }}</b></div>
+   </div>
+   {% if car.description %}<div class="description"><h3>Про автомобіль</h3><p>{{ car.description }}</p></div>{% endif %}
+   {% if user %}<div class="admin-actions"><a class="btn btn-primary" href="/cars/{{ car.id }}/edit">✎ Редагувати</a><form action="/cars/{{ car.id }}/delete" method="post" onsubmit="return confirm('Точно видалити цей автомобіль?')"><button class="btn btn-danger" type="submit">Видалити авто</button></form></div>{% endif %}
+  </div>
+ </div>
+</div>
+
+{% if gallery %}
+<script type="application/json" id="gallery-data">{{ gallery|tojson }}</script>
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Галерея">
+ <button type="button" class="lb-btn lb-close" aria-label="Закрити"><svg class="ic"><use href="#i-close"/></svg></button>
+ <div class="lb-count"></div>
+ {% if gallery|length > 1 %}
+ <button type="button" class="lb-btn lb-prev" aria-label="Назад"><svg class="ic"><use href="#i-chev-l"/></svg></button>
+ <button type="button" class="lb-btn lb-next" aria-label="Далі"><svg class="ic"><use href="#i-chev-r"/></svg></button>
+ {% endif %}
+ <div class="lb-stage"><img class="lb-img" alt=""></div>
+</div>
+{% endif %}
+{% endblock %}

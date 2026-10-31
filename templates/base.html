@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}AutoVault{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css?v={{ asset_v }}">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-engine" viewBox="0 0 24 24"><path d="M3 11h2V9h2V7h3V5h4v2h2l2 2h2v6h-2l-2 2H9l-2-2H5v-2H3z"/></symbol>
+<symbol id="i-fuel" viewBox="0 0 24 24"><path d="M5 20V5a1 1 0 011-1h7a1 1 0 011 1v15M3 20h13M14 9h2a2 2 0 012 2v5a1.5 1.5 0 003 0V9l-3-3M7 8h5"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="6" cy="5" r="1.6"/><circle cx="12" cy="5" r="1.6"/><circle cx="18" cy="5" r="1.6"/><circle cx="6" cy="19" r="1.6"/><circle cx="12" cy="19" r="1.6"/><circle cx="18" cy="19" r="1.6"/><path d="M6 6.6v10.8M12 6.6v10.8M18 6.6v10.8M6 12h12"/></symbol>
+<symbol id="i-road" viewBox="0 0 24 24"><path d="M4 18a9 9 0 1116 0"/><path d="M12 18l4-6"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16M8 3v4M16 3v4"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 01-12 0c0-4.5 6-11 6-11z"/></symbol>
+<symbol id="i-body" viewBox="0 0 24 24"><path d="M3 14l2-5a2 2 0 012-1.3h10a2 2 0 012 1.3l2 5v4h-3v-2H6v2H3z"/><circle cx="7.5" cy="14" r=".6"/><circle cx="16.5" cy="14" r=".6"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+<symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="i-chev-r" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/></symbol>
+</defs></svg>
+<nav class="navbar">
+  <a class="brand-logo" href="/"><span class="logo-mark">A</span><span>AUTOVAULT<small>DRIVE YOUR STORY</small></span></a>
+  <div class="nav-links"><a href="/">Каталог</a><a href="/#about">Про проєкт</a></div>
+  <div class="nav-right">
+  {% if user %}
+    <span class="admin-chip">● Адмін: {{ user }}</span>
+    <form action="/logout" method="post"><button class="btn btn-ghost small" type="submit">Вийти</button></form>
+  {% else %}
+    <a class="btn btn-ghost small" href="/login">Вхід адміністратора</a>
+  {% endif %}
+  </div>
+</nav>
+<main>{% block content %}{% endblock %}</main>
+<footer class="footer"><a class="brand-logo mini" href="/"><span class="logo-mark">A</span><span>AUTOVAULT<small>DRIVE YOUR STORY</small></span></a><span>Автомобільний каталог · FastAPI + SQLite</span></footer>
+<script src="/static/app.js?v={{ asset_v }}" defer></script>
+</body></html>
